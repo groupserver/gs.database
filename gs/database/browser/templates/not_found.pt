@@ -1,0 +1,30 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+  xmlns:metal="http://xml.zope.org/namespaces/metal"
+  xmlns:tal="http://xml.zope.org/namespaces/tal"
+  tal:define="siteName python:view.siteInfo.get_name()">
+  <tal:block metal:use-macro="context/@@groupserver_site_home_layout/page">
+    <head>
+      <title metal:fill-slot="title">
+        Page Not Found (404):
+        <tal:block replace="siteName"/>
+      </title>
+      <tal:block metal:fill-slot="metadata">
+        <meta name="author" content="OnlineGroups.Net" />
+        <meta name="description" content="Page not found page" />
+      </tal:block>
+    </head>
+    <body>
+      <div metal:fill-slot="sitenavigation" id="sitenavigation"
+        class="tabs ui-tabs ui-widget">
+        <ul class="ui-tabs-nav ui-helper-reset ui-helper-clearfix">
+          <li class="ui-state-default ui-corner-top">
+            <a href="/">Home</a>
+          </li>
+        </ul>
+      </div>
+      <div metal:fill-slot="body">
+          <span tal:replace="view/contextdir"/>          
+      </div>
+    </body>
+  </tal:block>
+</html>
