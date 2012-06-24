@@ -6,6 +6,10 @@ from zope.sqlalchemy import ZopeTransactionExtension
 from App.config import getConfiguration
 import ConfigParser
 import core
+import logging
+import time
+
+log = logging.getLogger('gs.database')
 
 path = core.__file__
 dirpath = os.path.dirname(path)
@@ -29,7 +33,7 @@ def init():
     parser = ConfigParser.SafeConfigParser()
     parser.read(os.path.join(cfg.instancehome, 'etc/database.ini'))
     for section in parser.sections():
-        print section
+        top = time.time()
         if section.find('database-') == 0:
             assert parser.has_option(section, 'instance_id'),\
                     "No instance ID specified in section '%s'" % section
@@ -39,5 +43,8 @@ def init():
             dsn = parser.get(section, 'dsn')
             
             databases[instance_id] = init_db(dsn)
-
-print databases 
+            
+            bottom = time.time()
+            
+            log.info("Initialised database for instance %s in %.2fs" % 
+                      (instance_id, (bottom-top)))
