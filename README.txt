@@ -126,7 +126,7 @@ the database.::
            d = {'columnName': thing}
        
            session = getSession()
-           session.execute(i, paras=d)
+           session.execute(i, params=d)
            mark_changed(session)
 
 Updating
