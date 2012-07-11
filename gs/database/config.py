@@ -1,9 +1,12 @@
+# coding=utf-8
 import os
+from os.path import isfile
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import scoped_session, sessionmaker, relation
 from sqlalchemy import create_engine, Table, MetaData, ThreadLocalMetaData
 from zope.sqlalchemy import ZopeTransactionExtension
 from App.config import getConfiguration
+from App.FindHomes import CLIENT_HOME, INSTANCE_HOME
 import ConfigParser
 import core
 import logging
@@ -15,6 +18,9 @@ path = core.__file__
 dirpath = os.path.dirname(path)
 
 databases = {}
+
+class ConfigError(Exception):
+    pass
 
 def init_db(dsn):
     engine = create_engine(dsn)
@@ -31,7 +37,13 @@ def init_db(dsn):
 def init():
     cfg = getConfiguration()
     parser = ConfigParser.SafeConfigParser()
-    parser.read(os.path.join(cfg.instancehome, 'etc/database.ini'))
+    configName = os.path.join(cfg.instancehome, 'etc/database.ini')
+    log.info('Reading the config file <%s>' % configName)
+    if not isfile(configName):
+        m = 'Could not read the database configuration, as the configuration '\
+            'file "%s" does not exist.' % configName
+        raise ConfigError(m)
+    parser.read(configName)
     for section in parser.sections():
         top = time.time()
         if section.find('database-') == 0:
