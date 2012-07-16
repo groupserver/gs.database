@@ -32,9 +32,10 @@ setup(name='gs.database',
     zip_safe=True,
     install_requires=[
         'setuptools',
+        'gs.config',
         'sqlalchemy',
+        'psycopg2',
         'zope.sqlalchemy',
-        'psycopg2'
         # -*- Extra requirements: -*-
     ],
     entry_points="""
