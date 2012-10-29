@@ -171,6 +171,13 @@ both `getTable`_ and `getSession`_, will then examine this environment
 variable to determine the correct database instance for the current
 **request**.
 
+Resources
+=========
+
+- Code repository: https://source.iopen.net/groupserver/gs.database
+- Questions and comments to http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
 .. _GroupServer: http://groupserver.org/
 .. _PostgreSQL: http://www.postgresql.org/
 .. [#otherData] Neither files, nor image caches are stored in the
