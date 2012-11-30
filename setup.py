@@ -32,7 +32,7 @@ setup(name='gs.database',
     zip_safe=True,
     install_requires=[
         'setuptools',
-        'gs.config[zope]',
+        'gs.config[zope]',  # Note: With Zope support
         'sqlalchemy',
         'psycopg2',
         'zope.sqlalchemy',
