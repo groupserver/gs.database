@@ -1,13 +1,26 @@
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker, relation
-from sqlalchemy import create_engine, Table, MetaData, ThreadLocalMetaData
-from zope.sqlalchemy import ZopeTransactionExtension
-from gs.database.config import get_db
+# -*- coding: utf-8 -*-
+##############################################################################
+#
+# Copyright © 2014 OnlineGroups.net and Contributors.
+# All Rights Reserved.
+#
+# This software is subject to the provisions of the Zope Public License,
+# Version 2.1 (ZPL).  A copy of the ZPL should accompany this distribution.
+# THIS SOFTWARE IS PROVIDED "AS IS" AND ANY AND ALL EXPRESS OR IMPLIED
+# WARRANTIES ARE DISCLAIMED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+# WARRANTIES OF TITLE, MERCHANTABILITY, AGAINST INFRINGEMENT, AND FITNESS
+# FOR A PARTICULAR PURPOSE.
+#
+##############################################################################
+from __future__ import absolute_import
+from .config import get_db
+
 
 def getTable(tablename):
     database = get_db()
     return database['metadata'].tables[tablename]
 
+
 def getSession():
-    database = get_db() 
+    database = get_db()
     return database['session']()
