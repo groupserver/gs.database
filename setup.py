@@ -31,12 +31,13 @@ setup(name='gs.database',
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         "Environment :: Web Environment",
-        "Framework :: Zope2",
         "Intended Audience :: Developers",
         'License :: OSI Approved :: Zope Public License',
         "Natural Language :: English",
-        "Operating System :: POSIX :: Linux"
+        "Operating System :: OS Independent",
         "Programming Language :: Python",
+        "Programming Language :: Python :: 2",
+        "Programming Language :: Python :: 2.7",
         "Topic :: Software Development :: Libraries :: Python Modules",
       ],
     keywords='groupserver option options',
@@ -55,7 +56,7 @@ setup(name='gs.database',
         'setuptools',
         'sqlalchemy',
         'zope.sqlalchemy',
-        'gs.config[zope]',  # Note: With Zope support  # FIXME: Really?
+        'gs.config',  # Note: Sans Zope support
     ],
     entry_points="""
     # -*- Entry points: -*-
