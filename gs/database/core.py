@@ -17,10 +17,21 @@ from .config import get_db
 
 
 def getTable(tablename):
+    '''Get a database table for the database for the current instance
+
+:param str tablename: The name of the table.
+:return: A database table.
+:rtype: ``sqlalchemy.Table``'''
     database = get_db()
     return database['metadata'].tables[tablename]
 
 
 def getSession():
+    '''Get a SQLAlchemy session for the current instance
+
+:return: The database session for the current GroupServer instance.
+:rtype: `SQLAlchemy session.`__
+
+.. __: http://docs.sqlalchemy.org/en/rel_0_7/orm/session.html'''
     database = get_db()
     return database['session']()

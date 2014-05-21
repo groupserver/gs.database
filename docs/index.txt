@@ -1,0 +1,29 @@
+:mod:`gs.database`
+==================
+
+The :mod:`gs.database` module provides two functions that easily
+allow code to connect to the database session for the current
+GroupServer instance.
+
+Contents:
+
+.. toctree::
+   :maxdepth: 2
+
+   api
+   HISTORY
+
+Resources
+=========
+
+- Code repository: https://source.iopen.net/groupserver/gs.database
+- Questions and comments to http://groupserver.org/groups/development
+- Report bugs at https://redmine.iopen.net/projects/groupserver
+
+Indices and tables
+==================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

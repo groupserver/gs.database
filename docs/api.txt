@@ -1,0 +1,115 @@
+:mod:`gs.database` API Reference
+================================
+
+The ``getTable`` and ``getSession`` functions are exported by
+this product.
+
+``getTable``
+------------
+
+The :func:`gs.database.getTable` function is used to get a
+table. Queries are performed on the table that is returned.
+
+.. autofunction:: gs.database.getTable
+
+``getSession``
+--------------
+
+The :func:`gs.database.getSession` is used to get the SQLAlchemy
+session that will manage the connection with the current database
+instance and execute the query.
+
+.. autofunction:: gs.database.getSession
+
+Examples
+--------
+
+In GroupServer a `query class`_ is normally used to get the
+table, and perform select_, insert_ and update_ commands on the
+table.
+
+Query class
+~~~~~~~~~~~
+
+Normally a query-class is created to combine some related
+queries. The :func:`gs.database.getTable` call is made to
+instantiate the table as a property of the instance.
+
+.. code-block:: python
+
+    class QueryClass(object):
+        def __init__(self):
+            self.table = getTable('tableName')
+
+Select
+~~~~~~
+
+Most selects follow the same pattern:
+
+* Create a select statement (``self.table.select``),
+* Specify the columns to select,
+* Specify the order,
+* Append a where-clause,
+* Append another where-clause to ignore the logically-deleted items (see
+  update_ below) and
+* Then the statement is executed.
+
+Usually each result is marshaled into a dictionary, and all the results
+placed in a list.
+
+.. code-block:: python
+
+   def get_some_column(self, methodArgument):
+       assert methodArgument, 'No method argument specified'
+       cols = [self.table.c.columnName]
+       s = self.table.select(cols).order_by(self.table.c.someOtherColumn)
+       s.append_whereclause(self.table.c.columnName == methodArgument)
+       s.append_whereclause(self.table.c.deleted == None)
+       session = getSession()
+       r = session.execute(s)
+       retval = []
+       if r:
+           retval = [{'columnName': x['columnName']} for x in r]
+       return retval
+
+Insert
+~~~~~~
+
+When inserting an insert statement is first created (normally by
+``self.table.insert``). The data to insert is then passed as the dictionary
+``params`` when executing the statement. Finally,
+``zope.sqlalchemy.mark_changed`` is called to ensure the data is flushed to
+the database.
+
+.. code-block:: python
+
+   def add_some_thing(self, thing):
+       assert thing, 'No thing specified'
+       i = self.table.insert()
+       d = {'columnName': thing}
+
+       session = getSession()
+       session.execute(i, params=d)
+       mark_changed(session)
+
+Update
+~~~~~~
+
+Updating is rare in GroupServer. About the only time it is ever done is to
+logically delete an entry by setting the ``deleted`` column to the current
+time [#deleted]_.
+
+.. code-block:: python
+
+  def del_some_thing(self, methodArgument):
+      u = self.table.update(self.table.c.columnName == methodArgument)
+      d = {'deleted': datetime.utcnow()}
+
+      session = getSession()
+      session.execute(u, params=d}
+      mark_changed(session)
+
+.. [#deleted] Our convention is to have a ``deleted`` column, which is a
+              timestamp-with-timezone. When set to ``NULL`` the entry is
+              not deleted. When set the entry is deleted, with the
+              timestamp showing when it was deleted.

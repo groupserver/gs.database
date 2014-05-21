@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.11: http://docutils.sourceforge.net/" />
+<title>gs.database</title>
+<meta name="authors" content="Richard Waid  Michael JasonSmith" />
+<meta name="date" content="2014-05-21" />
+<meta name="organization" content="GroupServer.org" />
+<meta name="copyright" content="This document is licensed under a Creative Commons Attribution-Share Alike 4.0 International License by OnlineGroups.net." />
+<link rel="stylesheet" href="http://onlinegroups.net/++resource++globalstyle-20120515.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="gs-database">
+<div id="bodyblock">
+<div id="divisionHomeContent">
+<h1 class="title"><tt class="docutils literal">gs.database</tt></h1>
+<h2 class="subtitle" id="get-a-database-connection-for-the-current-groupserver-instance">Get a database connection for the current GroupServer instance</h2>
+<table class="docinfo" frame="void" rules="none">
+<col class="docinfo-name" />
+<col class="docinfo-content" />
+<tbody valign="top">
+<tr><th class="docinfo-name">Authors:</th>
+<td>Richard Waid
+<br />Michael JasonSmith</td></tr>
+<tr><th class="docinfo-name">Contact:</th>
+<td>Michael JasonSmith &lt;<a class="reference external" href="mailto:mpj17&#64;onlinegroups.net">mpj17&#64;onlinegroups.net</a>&gt;</td></tr>
+<tr><th class="docinfo-name">Date:</th>
+<td>2014-05-21</td></tr>
+<tr><th class="docinfo-name">Organization:</th>
+<td><a class="first last reference external" href="http://groupserver.org/">GroupServer.org</a></td></tr>
+<tr><th class="docinfo-name">Copyright:</th>
+<td>This document is licensed under a
+<a class="reference external" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-Share Alike 4.0 International License</a>
+by <a class="reference external" href="https://onlinegroups.net">OnlineGroups.net</a>.</td></tr>
+</tbody>
+</table>
+<div class="section" id="introduction">
+<h1>Introduction</h1>
+<p><a class="reference external" href="http://groupserver.org/">GroupServer</a> stores <em>most</em> of its data using the <a class="reference external" href="http://www.postgresql.org/">PostgreSQL</a>
+relational database <a class="footnote-reference" href="#otherdata" id="id1">[1]</a>. The <a class="reference external" href="http://www.sqlalchemy.org/">SQLAlchemy</a> system is
+used to provide the connection between GroupServer and PostgreSQL
+<a class="footnote-reference" href="#transaction" id="id2">[2]</a>. The <tt class="docutils literal">gs.database</tt> product provides some
+utilities to establish the connection, and use the connection
+more easily. Most code will perform a query in the same way, and
+not have to consider which <a class="reference internal" href="#database-instance">database instance</a> is being used.</p>
+<p>See the Sphinx documentation in <tt class="docutils literal">docs</tt> for more information.</p>
+</div>
+<div class="section" id="database-instance">
+<h1>Database Instance</h1>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Note:</th><td class="field-body">For GroupServer installations with only one site there can only
+be one database instance, so this section can be ignored.</td>
+</tr>
+</tbody>
+</table>
+<p>GroupServer is highly scalable:</p>
+<ul class="simple">
+<li>One <a class="reference external" href="http://zope.org/">Zope</a> instance can manage multiple GroupServer instances,</li>
+<li>One GroupServer instance can manage multiple sites, and</li>
+<li>One site can handle multiple groups.</li>
+</ul>
+<p>The PostgreSQL database is independent of this. A single
+<em>database instance</em> can be shared by multiple sites. The main
+advantage of this is that the <strong>profile</strong> information is shared
+<a class="footnote-reference" href="#profile" id="id3">[3]</a>. However, the databases do not need to be shared.</p>
+<p>The front-end HTTP proxy is used to set the correct database
+instance, in much the same way that the proxy is used to select
+the correct skin <a class="footnote-reference" href="#skin" id="id4">[4]</a>. The proxy should set the
+<tt class="docutils literal">HTTP_INSTANCEID</tt> environment variable in the HTTP request to
+the ID of the database to connect to. The
+<tt class="docutils literal">gs.database.core.getInstanceId</tt> utility, which is called by
+both <tt class="docutils literal">getTable</tt> and <tt class="docutils literal">getSession</tt>, will then examine this
+environment variable to determine the correct database instance
+for the current <strong>request</strong>.</p>
+</div>
+<div class="section" id="resources">
+<h1>Resources</h1>
+<ul class="simple">
+<li>Code repository: <a class="reference external" href="https://source.iopen.net/groupserver/gs.database">https://source.iopen.net/groupserver/gs.database</a></li>
+<li>Questions and comments to <a class="reference external" href="http://groupserver.org/groups/development">http://groupserver.org/groups/development</a></li>
+<li>Report bugs at <a class="reference external" href="https://redmine.iopen.net/projects/groupserver">https://redmine.iopen.net/projects/groupserver</a></li>
+</ul>
+<table class="docutils footnote" frame="void" id="otherdata" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[1]</a></td><td>Neither files, nor image caches are stored in the
+relational database. These are the the two major
+exceptions to the &quot;data is in the database&quot; rule.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="transaction" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[2]</a></td><td><a class="reference external" href="http://pypi.python.org/pypi/zope.sqlalchemy">The zope.sqlalchemy product</a>
+also provides some integration between Zope
+transactions and the SQLAlchemy transactions.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="profile" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[3]</a></td><td>By sharing profile information between sites people
+can use the same profile to log in to multiple
+sites, and do not have to verify their email
+address for each site.</td></tr>
+</tbody>
+</table>
+<table class="docutils footnote" frame="void" id="skin" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[4]</a></td><td>Skins are not just colour-schemes, but entire
+collections of code. As crazy as it sounds, <a class="reference external" href="http://plone.org/documentation/kb/select-skin-by-url">selecting
+a skin based on URL</a>
+can change vast amounts of behaviour, and is normal
+with Zope.</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</body>
+</html>
