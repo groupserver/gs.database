@@ -62,6 +62,9 @@ setup(name='gs.database',
         'zope.sqlalchemy',
         'gs.config',  # Note: Sans Zope support
     ],
+    extras_require={'docs': ['Sphinx'], },
+    test_suite='gs.database.tests.test_all',
+    tests_require=['mock'],
     entry_points="""
     # -*- Entry points: -*-
     """,)
